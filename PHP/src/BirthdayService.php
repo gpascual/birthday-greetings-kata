@@ -2,6 +2,8 @@
 
 namespace BirthdayGreetings;
 
+use BirthdayGreetings\Adapters\NoOpEmployeeRepository;
+use BirthdayGreetings\Adapters\NoOpMessageSender;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use RuntimeException;
@@ -22,7 +24,7 @@ class BirthdayService
 
     public static function constructTheUglyWay(string $fileName, string $smtpHost, int $smtpPort): BirthdayService
     {
-        $service = new self();
+        $service = new self(new NoOpEmployeeRepository(), new NoOpMessageSender());
         $service->handler = fopen($fileName, 'r');
         $service->smtpHost = $smtpHost;
         $service->smtpPort = $smtpPort;
@@ -34,16 +36,9 @@ class BirthdayService
 
     public function sendGreetings(XDate $xDate): void
     {
-// Skip header
-        fgetcsv($this->handler, 0, ',', '"', '\\');
 
-        while (($data = fgetcsv($this->handler, 0, ',', '"', '\\')) !== false) {
-            if (count($data) < 4) {
-                continue; // Skip invalid lines
-            }
-
+        foreach ($this->getEmployees() as $employee) {
             try {
-                $employee = new Employee(trim($data[1]), trim($data[0]), trim($data[2]), trim($data[3]));
                 if ($employee->isBirthday($xDate)) {
                     $recipient = $employee->getEmail();
                     $body = str_replace('%NAME%', $employee->getFirstName(), 'Happy Birthday, dear %NAME%');
@@ -83,6 +78,21 @@ class BirthdayService
             $mail->send();
         } catch (Exception $e) {
             throw new RuntimeException("Message could not be sent. Mailer Error: {$mail->ErrorInfo}", 0, $e);
+        }
+    }
+
+    /** @return iterable<Employee> */
+    private function getEmployees(): iterable
+    {
+        // Skip header
+        fgetcsv($this->handler, 0, ',', '"', '\\');
+
+        while (($data = fgetcsv($this->handler, 0, ',', '"', '\\')) !== false) {
+            if (count($data) < 4) {
+                continue; // Skip invalid lines
+            }
+
+            yield new Employee(trim($data[1]), trim($data[0]), trim($data[2]), trim($data[3]));
         }
     }
 }
