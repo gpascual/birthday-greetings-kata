@@ -31,5 +31,5 @@ describe('BirthdayService', function () {
 
             $this->employeeRepository->shouldHaveReceived('getAll');
         }
-    )->skip();
+    );
 });

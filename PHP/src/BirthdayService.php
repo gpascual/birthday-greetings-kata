@@ -2,6 +2,7 @@
 
 namespace BirthdayGreetings;
 
+use BirthdayGreetings\Adapters\CsvEmployeeRepository;
 use BirthdayGreetings\Adapters\NoOpEmployeeRepository;
 use BirthdayGreetings\Adapters\NoOpMessageSender;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -24,13 +25,9 @@ class BirthdayService
 
     public static function constructTheUglyWay(string $fileName, string $smtpHost, int $smtpPort): BirthdayService
     {
-        $service = new self(new NoOpEmployeeRepository(), new NoOpMessageSender());
-        $service->handler = fopen($fileName, 'r');
+        $service = new self(new CsvEmployeeRepository($fileName), new NoOpMessageSender());
         $service->smtpHost = $smtpHost;
         $service->smtpPort = $smtpPort;
-        if ($service->handler === false) {
-            throw new RuntimeException("Could not open file: $fileName");
-        }
         return ($service);
     }
 
@@ -51,8 +48,6 @@ class BirthdayService
                 continue;
             }
         }
-
-        fclose($this->handler);
     }
 
     private function sendMessage(string $sender, string $subject, string $body, string $recipient): void
@@ -84,15 +79,6 @@ class BirthdayService
     /** @return iterable<Employee> */
     private function getEmployees(): iterable
     {
-        // Skip header
-        fgetcsv($this->handler, 0, ',', '"', '\\');
-
-        while (($data = fgetcsv($this->handler, 0, ',', '"', '\\')) !== false) {
-            if (count($data) < 4) {
-                continue; // Skip invalid lines
-            }
-
-            yield new Employee(trim($data[1]), trim($data[0]), trim($data[2]), trim($data[3]));
-        }
+        return $this->employeeRepository->getAll();
     }
 }
