@@ -33,7 +33,7 @@ class AcceptanceTest extends TestCase
 
     public function testWillSendGreetingsWhenItsSomebodysBirthday(): void
     {
-        $this->birthdayService->sendGreetings(
+        $this->birthdayService->sendGreetingsUgly(
             'employee_data.txt',
             new XDate('2008/10/08'),
             'localhost',
@@ -55,7 +55,7 @@ class AcceptanceTest extends TestCase
 
     public function testWillNotSendEmailsWhenNobodysBirthday(): void
     {
-        $this->birthdayService->sendGreetings(
+        $this->birthdayService->sendGreetingsUgly(
             'employee_data.txt',
             new XDate('2008/01/01'),
             'localhost',
