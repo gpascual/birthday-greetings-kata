@@ -8,7 +8,8 @@ class Main
 {
     public static function main(): void
     {
-        BirthdayService::sendGreetingsUgly('employee_data.txt', new XDate(), 'localhost', 25);
+        $service = BirthdayService::constructTheUglyWay('employee_data.txt', 'localhost', 25);
+        $service->sendGreetings((new XDate()));
     }
 }
 

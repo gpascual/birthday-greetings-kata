@@ -24,12 +24,6 @@ class BirthdayService
         return ($service);
     }
 
-    public static function sendGreetingsUgly(string $fileName, XDate $xDate, string $smtpHost, int $smtpPort): void
-    {
-        $birthdayService = self::constructTheUglyWay($fileName, $smtpHost, $smtpPort);
-        $birthdayService->sendGreetings($xDate);
-    }
-
     public function sendGreetings(XDate $xDate): void
     {
 // Skip header

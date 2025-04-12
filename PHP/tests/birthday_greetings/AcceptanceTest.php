@@ -14,7 +14,7 @@ class AcceptanceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->birthdayService = new BirthdayService();
+        $this->birthdayService = BirthdayService::constructTheUglyWay('employee_data.txt', 'localhost', self::SMTP_PORT);
         $this->deleteAllEmails();
     }
 
@@ -33,12 +33,7 @@ class AcceptanceTest extends TestCase
 
     public function testWillSendGreetingsWhenItsSomebodysBirthday(): void
     {
-        $this->birthdayService->sendGreetingsUgly(
-            'employee_data.txt',
-            new XDate('2008/10/08'),
-            'localhost',
-            self::SMTP_PORT
-        );
+        $this->birthdayService->sendGreetings((new XDate('2008/10/08')));
 
         // Wait for email to be processed
         sleep(1);
@@ -55,12 +50,7 @@ class AcceptanceTest extends TestCase
 
     public function testWillNotSendEmailsWhenNobodysBirthday(): void
     {
-        $this->birthdayService->sendGreetingsUgly(
-            'employee_data.txt',
-            new XDate('2008/01/01'),
-            'localhost',
-            self::SMTP_PORT
-        );
+        $this->birthdayService->sendGreetings((new XDate('2008/01/01')));
 
         // Wait for any potential emails to be processed
         sleep(1);
