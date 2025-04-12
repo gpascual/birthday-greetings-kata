@@ -3,15 +3,14 @@
 namespace BirthdayGreetings;
 
 use BirthdayGreetings\Adapters\CsvEmployeeRepository;
-use BirthdayGreetings\Adapters\NoOpEmployeeRepository;
 use BirthdayGreetings\Adapters\NoOpMessageSender;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use RuntimeException;
+use function BirthdayGreetings\Functional\filter;
 
 class BirthdayService
 {
-    private $handler;
     private $smtpHost;
     private $smtpPort;
     private EmployeeRepository $employeeRepository;
@@ -33,15 +32,14 @@ class BirthdayService
 
     public function sendGreetings(XDate $xDate): void
     {
-
-        foreach ($this->getEmployees() as $employee) {
+        $employees = $this->getEmployees();
+        $employeesCelebratingBirthday = filter($employees, fn(Employee $e) => $e->isBirthday($xDate));
+        foreach ($employeesCelebratingBirthday as $employee) {
             try {
-                if ($employee->isBirthday($xDate)) {
-                    $recipient = $employee->getEmail();
-                    $body = str_replace('%NAME%', $employee->getFirstName(), 'Happy Birthday, dear %NAME%');
-                    $subject = 'Happy Birthday!';
-                    $this->sendMessage('sender@here.com', $subject, $body, $recipient);
-                }
+                $recipient = $employee->getEmail();
+                $body = str_replace('%NAME%', $employee->getFirstName(), 'Happy Birthday, dear %NAME%');
+                $subject = 'Happy Birthday!';
+                $this->sendMessage('sender@here.com', $subject, $body, $recipient);
             } catch (\Exception $e) {
                 // Log error and continue with next employee
                 error_log("Error processing employee data: " . $e->getMessage());
