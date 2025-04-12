@@ -2,6 +2,8 @@
 
 namespace birthday_greetings;
 
+use BirthdayGreetings\Adapters\CsvEmployeeRepository;
+use BirthdayGreetings\Adapters\MailMessageSender;
 use BirthdayGreetings\BirthdayService;
 use BirthdayGreetings\XDate;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +16,10 @@ class AcceptanceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->birthdayService = BirthdayService::constructTheUglyWay('employee_data.txt', 'localhost', self::SMTP_PORT);
+        $this->birthdayService = new BirthdayService(
+            new CsvEmployeeRepository('employee_data.txt'),
+            new MailMessageSender('localhost', self::SMTP_PORT)
+        );
         $this->deleteAllEmails();
     }
 

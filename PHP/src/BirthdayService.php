@@ -2,8 +2,6 @@
 
 namespace BirthdayGreetings;
 
-use BirthdayGreetings\Adapters\CsvEmployeeRepository;
-use BirthdayGreetings\Adapters\MailMessageSender;
 use function BirthdayGreetings\Functional\filter;
 
 class BirthdayService
@@ -12,11 +10,6 @@ class BirthdayService
         private readonly EmployeeRepository $employeeRepository,
         private readonly MessageSender $messageSender
     ) {
-    }
-
-    public static function constructTheUglyWay(string $fileName, string $smtpHost, int $smtpPort): BirthdayService
-    {
-        return new self(new CsvEmployeeRepository($fileName), new MailMessageSender($smtpHost, $smtpPort));
     }
 
     public function sendGreetings(XDate $xDate): void
