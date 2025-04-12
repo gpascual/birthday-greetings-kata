@@ -1,6 +1,8 @@
 <?php
 
-namespace birthday_greetings;
+namespace BirthdayGreetings;
+
+use BirthdayGreetings\XDate;
 
 class Employee
 {
@@ -45,7 +47,7 @@ class Employee
         if ($obj === null) {
             return false;
         }
-        if (!($obj instanceof Employee)) {
+        if (!($obj instanceof self)) {
             return false;
         }
         

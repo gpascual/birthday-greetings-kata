@@ -13,12 +13,13 @@
     },
     "autoload": {
         "psr-4": {
-            "birthday_greetings\\": "src/birthday_greetings/"
+            "BirthdayGreetings\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "birthday_greetings\\": "tests/birthday_greetings/"
+            "birthday_greetings\\": "tests/birthday_greetings/",
+            "BirthdayGreetings\\Tests\\": "tests/"
         }
     },
     "config": {

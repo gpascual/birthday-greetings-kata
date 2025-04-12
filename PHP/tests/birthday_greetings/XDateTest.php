@@ -2,6 +2,7 @@
 
 namespace birthday_greetings;
 
+use BirthdayGreetings\XDate;
 use PHPUnit\Framework\TestCase;
 
 class XDateTest extends TestCase

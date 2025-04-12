@@ -11,7 +11,7 @@
 |
 */
 
-pest()->extend(Tests\TestCase::class)->in('Feature');
+pest()->extend(BirthdayGreetings\Tests\TestCase::class)->in('Feature');
 
 /*
 |--------------------------------------------------------------------------

@@ -1,7 +1,9 @@
 <?php
 
-namespace birthday_greetings;
+namespace BirthdayGreetings;
 
+use DateTime;
+use InvalidArgumentException;
 
 class XDate
 {
@@ -10,11 +12,11 @@ class XDate
     public function __construct(?string $yyyyMMdd = null)
     {
         if ($yyyyMMdd === null) {
-            $this->date = new \DateTime();
+            $this->date = new DateTime();
         } else {
-            $this->date = \DateTime::createFromFormat('Y/m/d', $yyyyMMdd);
+            $this->date = DateTime::createFromFormat('Y/m/d', $yyyyMMdd);
             if ($this->date === false) {
-                throw new \InvalidArgumentException("Invalid date format: $yyyyMMdd. Expected format: YYYY/MM/DD");
+                throw new InvalidArgumentException("Invalid date format: $yyyyMMdd. Expected format: YYYY/MM/DD");
             }
         }
     }
@@ -31,7 +33,7 @@ class XDate
 
     public function isSameDay(XDate $anotherDate): bool
     {
-        return $anotherDate->getDay() === $this->getDay() && 
+        return $anotherDate->getDay() === $this->getDay() &&
                $anotherDate->getMonth() === $this->getMonth();
     }
 
@@ -42,7 +44,7 @@ class XDate
 
     public function equals($obj): bool
     {
-        if (!($obj instanceof XDate)) {
+        if (!($obj instanceof self)) {
             return false;
         }
         return $obj->date == $this->date;
@@ -52,4 +54,4 @@ class XDate
     {
         return $this->date->getTimestamp();
     }
-} 
+}

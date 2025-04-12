@@ -1,9 +1,12 @@
 <?php
 
-namespace birthday_greetings;
+namespace BirthdayGreetings;
 
+use BirthdayGreetings\Employee;
+use BirthdayGreetings\XDate;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use RuntimeException;
 
 class BirthdayService
 {
@@ -11,7 +14,7 @@ class BirthdayService
     {
         $handle = fopen($fileName, 'r');
         if ($handle === false) {
-            throw new \RuntimeException("Could not open file: $fileName");
+            throw new RuntimeException("Could not open file: $fileName");
         }
 
         // Skip header
@@ -62,7 +65,7 @@ class BirthdayService
 
             $mail->send();
         } catch (Exception $e) {
-            throw new \RuntimeException("Message could not be sent. Mailer Error: {$mail->ErrorInfo}", 0, $e);
+            throw new RuntimeException("Message could not be sent. Mailer Error: {$mail->ErrorInfo}", 0, $e);
         }
     }
 }

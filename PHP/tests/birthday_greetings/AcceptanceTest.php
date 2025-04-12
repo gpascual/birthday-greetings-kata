@@ -2,6 +2,8 @@
 
 namespace birthday_greetings;
 
+use BirthdayGreetings\BirthdayService;
+use BirthdayGreetings\XDate;
 use PHPUnit\Framework\TestCase;
 
 class AcceptanceTest extends TestCase
@@ -66,4 +68,4 @@ class AcceptanceTest extends TestCase
         $emails = $this->getEmails();
         $this->assertCount(0, $emails, 'Expected no emails to be sent');
     }
-} 
+}

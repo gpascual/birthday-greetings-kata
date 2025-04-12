@@ -1,7 +1,10 @@
 <?php
 
-namespace birthday_greetings;
+namespace BirthdayGreetings;
 
+
+use BirthdayGreetings\BirthdayService;
+use BirthdayGreetings\XDate;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 

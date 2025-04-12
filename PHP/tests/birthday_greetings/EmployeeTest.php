@@ -2,6 +2,8 @@
 
 namespace birthday_greetings;
 
+use BirthdayGreetings\Employee;
+use BirthdayGreetings\XDate;
 use PHPUnit\Framework\TestCase;
 
 class EmployeeTest extends TestCase
@@ -13,4 +15,4 @@ class EmployeeTest extends TestCase
         $this->assertFalse($employee->isBirthday(new XDate("2008/01/30")));
         $this->assertFalse($employee->isBirthday(new XDate("2008/02/01")));
     }
-} 
+}
