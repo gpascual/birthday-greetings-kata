@@ -11,6 +11,14 @@ class BirthdayService
     private $handler;
     private $smtpHost;
     private $smtpPort;
+    private EmployeeRepository $employeeRepository;
+    private MessageSender $messageSender;
+
+    public function __construct(EmployeeRepository $employeeRepository, MessageSender $messageSender)
+    {
+        $this->employeeRepository = $employeeRepository;
+        $this->messageSender = $messageSender;
+    }
 
     public static function constructTheUglyWay(string $fileName, string $smtpHost, int $smtpPort): BirthdayService
     {
