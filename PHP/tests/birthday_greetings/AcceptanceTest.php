@@ -6,6 +6,8 @@ use BirthdayGreetings\Adapters\CsvEmployeeRepository;
 use BirthdayGreetings\Adapters\MailMessageSender;
 use BirthdayGreetings\BirthdayService;
 use BirthdayGreetings\XDate;
+use Monolog\Handler\ErrorLogHandler;
+use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 
 class AcceptanceTest extends TestCase
@@ -18,7 +20,8 @@ class AcceptanceTest extends TestCase
     {
         $this->birthdayService = new BirthdayService(
             new CsvEmployeeRepository('employee_data.txt'),
-            new MailMessageSender('localhost', self::SMTP_PORT)
+            new MailMessageSender('localhost', self::SMTP_PORT),
+            new Logger('BirthdayGreetings', [new ErrorLogHandler()])
         );
         $this->deleteAllEmails();
     }

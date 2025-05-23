@@ -7,6 +7,8 @@ use BirthdayGreetings\Message;
 use BirthdayGreetings\MessageSender;
 use BirthdayGreetings\Tests\BirthdayServiceTestCase;
 use BirthdayGreetings\XDate;
+use Monolog\Handler\ErrorLogHandler;
+use Monolog\Logger;
 
 pest()->extend(BirthdayServiceTestCase::class);
 
@@ -16,7 +18,8 @@ describe('BirthdayService', function () {
         $this->messageSender = spy(MessageSender::class);
         $this->sut = new BirthdayService(
             $this->employeeRepository,
-            $this->messageSender
+            $this->messageSender,
+            new Logger('BirthdayGreetings', [new ErrorLogHandler()])
         );
     });
 

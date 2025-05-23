@@ -2,11 +2,14 @@
 
 namespace BirthdayGreetings;
 
+use Psr\Log\LoggerInterface;
+
 readonly class BirthdayService
 {
     public function __construct(
         private EmployeeRepository $employeeRepository,
-        private MessageSender      $messageSender
+        private MessageSender $messageSender,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -16,8 +19,7 @@ readonly class BirthdayService
             try {
                 $this->messageSender->sendMessage(Message::birthdayGreeting($employee));
             } catch (\Exception $e) {
-                // Log error and continue with next employee
-                error_log("Error processing employee data: " . $e->getMessage());
+                $this->logger->error("Error processing employee data: " . $e->getMessage(), ['exception' => $e]);
                 continue;
             }
         }
