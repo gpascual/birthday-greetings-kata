@@ -5,5 +5,5 @@ namespace BirthdayGreetings;
 interface EmployeeRepository
 {
     /** @return iterable<Employee> */
-    public function getAll(): iterable;
+    public function findEmployeesCelebratingBirthdayOn(XDate $xDate): iterable;
 }

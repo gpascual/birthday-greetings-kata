@@ -4,6 +4,8 @@ namespace BirthdayGreetings\Adapters;
 
 use BirthdayGreetings\Employee;
 use BirthdayGreetings\EmployeeRepository;
+use BirthdayGreetings\XDate;
+use function BirthdayGreetings\Functional\filter;
 use function BirthdayGreetings\Functional\map;
 
 class CsvEmployeeRepository implements EmployeeRepository
@@ -15,8 +17,12 @@ class CsvEmployeeRepository implements EmployeeRepository
         $this->filename = $filename;
     }
 
+    public function findEmployeesCelebratingBirthdayOn(XDate $xDate): iterable
+    {
+        return filter($this->getAll(), fn(Employee $e) => $e->isBirthday($xDate));
+    }
 
-    public function getAll(): iterable
+    private function getAll(): iterable
     {
         return map(
             $this->extractEmployeeLines(),

@@ -21,33 +21,16 @@ describe('BirthdayService', function () {
     });
 
     it(
-        'retrieves all employees',
-        function () {
-            $arrayIterator = new ArrayIterator([new Employee('John', 'Doe', '1999/01/01', 'johndoe@foobar.com')]);
-            $this->employeeRepository
-                ->allows('getAll')
-                ->andReturns($arrayIterator);
-            $this->messageSender->allows('sendMessage');
-
-            $this->sut->sendGreetings(new XDate('1999/01/01'));
-
-            $this->employeeRepository->shouldHaveReceived('getAll');
-        }
-    );
-
-    it(
         'sends greeting messages to employees celebrating their birthday only',
         function () {
             $today = '1990/12/31';
             $anEmployeeCelebratingBirthday = new Employee('Jane', 'Doe', $today, 'janedoe@foobar.com');
             $anotherEmployeeCelebratingBirthday = new Employee('Mark', 'Doe', $today, 'janedoe@foobar.com');
             $this->employeeRepository
-                ->allows('getAll')
+                ->allows('findEmployeesCelebratingBirthdayOn')
                 ->andReturns(
                     new ArrayIterator([
-                        new Employee('John', 'Doe', '1990/12/30', 'johndoe@foobar.com'),
                         $anEmployeeCelebratingBirthday,
-                        new Employee('Susan', 'Doe', '1991/01/01', 'janedoe@foobar.com'),
                         $anotherEmployeeCelebratingBirthday,
                     ])
                 );

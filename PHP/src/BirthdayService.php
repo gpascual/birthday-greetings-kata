@@ -2,21 +2,17 @@
 
 namespace BirthdayGreetings;
 
-use function BirthdayGreetings\Functional\filter;
-
-class BirthdayService
+readonly class BirthdayService
 {
     public function __construct(
-        private readonly EmployeeRepository $employeeRepository,
-        private readonly MessageSender $messageSender
+        private EmployeeRepository $employeeRepository,
+        private MessageSender      $messageSender
     ) {
     }
 
     public function sendGreetings(XDate $xDate): void
     {
-        $employees = $this->getEmployees();
-        $employeesCelebratingBirthday = filter($employees, fn(Employee $e) => $e->isBirthday($xDate));
-        foreach ($employeesCelebratingBirthday as $employee) {
+        foreach ($this->employeeRepository->findEmployeesCelebratingBirthdayOn($xDate) as $employee) {
             try {
                 $this->messageSender->sendMessage(Message::birthdayGreeting($employee));
             } catch (\Exception $e) {
@@ -25,12 +21,5 @@ class BirthdayService
                 continue;
             }
         }
-    }
-
-
-    /** @return iterable<Employee> */
-    private function getEmployees(): iterable
-    {
-        return $this->employeeRepository->getAll();
     }
 }
