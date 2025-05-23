@@ -16,7 +16,7 @@ class MailMessageSender implements MessageSender
     public function sendMessage(Message $message): void
     {
         $recipient = $message->employee->getEmail();
-        $body = str_replace('%NAME%', $message->employee->getFirstName(), 'Happy Birthday, dear %NAME%');
+        $body = str_replace('%NAME%', $message->employee->getFirstName(), 'Happy Birthday, dear %NAME%!');
         $subject = 'Happy Birthday!';
         $this->sendEmail('sender@here.com', $subject, $body, $recipient);
     }

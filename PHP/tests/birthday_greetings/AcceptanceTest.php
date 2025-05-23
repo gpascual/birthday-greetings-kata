@@ -48,7 +48,15 @@ class AcceptanceTest extends TestCase
 
         $email = $emails[0];
         $this->assertEquals('Happy Birthday!', $email['subject']);
-        $this->assertEquals('Happy Birthday, dear John!', $email['text']);
+        $this->assertEquals(
+            <<<'STR'
+Happy Birthday, dear John!
+
+
+STR
+            ,
+            $email['text']
+        );
         $this->assertCount(1, $email['to']);
         $this->assertEquals('john.doe@foobar.com', $email['to'][0]['address']);
     }
