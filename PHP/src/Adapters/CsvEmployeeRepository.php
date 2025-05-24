@@ -5,8 +5,10 @@ namespace BirthdayGreetings\Adapters;
 use BirthdayGreetings\Employee;
 use BirthdayGreetings\EmployeeRepository;
 use BirthdayGreetings\XDate;
+use Rx\Observable;
 use function BirthdayGreetings\Functional\filter;
 use function BirthdayGreetings\Functional\map;
+use function trim;
 
 class CsvEmployeeRepository implements EmployeeRepository
 {
@@ -17,20 +19,18 @@ class CsvEmployeeRepository implements EmployeeRepository
         $this->filename = $filename;
     }
 
-    public function findEmployeesCelebratingBirthdayOn(XDate $xDate): iterable
+    public function findEmployeesCelebratingBirthdayOn(XDate $xDate): Observable
     {
-        return filter($this->getAll(), fn(Employee $e) => $e->isBirthday($xDate));
+        return Observable::fromIterator($this->extractEmployeeLines())
+            ->map(
+                fn($data) => new Employee(trim($data[1]), trim($data[0]), trim($data[2]), trim($data[3]))
+            )
+            ->filter(
+                fn(Employee $e) => $e->isBirthday($xDate)
+            );
     }
 
-    private function getAll(): iterable
-    {
-        return map(
-            $this->extractEmployeeLines(),
-            fn($data) => new Employee(trim($data[1]), trim($data[0]), trim($data[2]), trim($data[3]))
-        );
-    }
-
-    private function extractEmployeeLines(): iterable
+    private function extractEmployeeLines(): \Iterator
     {
         $handler = $this->initializeFileResourceAtStart();
 

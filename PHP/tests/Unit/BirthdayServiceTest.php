@@ -8,6 +8,7 @@ use BirthdayGreetings\MessageSender;
 use BirthdayGreetings\Tests\BirthdayServiceTestCase;
 use BirthdayGreetings\XDate;
 use Psr\Log\LoggerInterface;
+use Rx\Observable;
 use Rx\Scheduler;
 use Rx\Scheduler\ImmediateScheduler;
 
@@ -41,7 +42,7 @@ describe('BirthdayService', function () {
             $this->employeeRepository
                 ->allows('findEmployeesCelebratingBirthdayOn')
                 ->andReturns(
-                    new ArrayIterator([
+                    Observable::fromArray([
                         $anEmployeeCelebratingBirthday,
                         $anotherEmployeeCelebratingBirthday,
                     ])
@@ -72,7 +73,7 @@ describe('BirthdayService', function () {
                 $this->employeeRepository
                     ->allows('findEmployeesCelebratingBirthdayOn')
                     ->andReturns(
-                        new ArrayIterator([
+                        Observable::fromArray([
                             $anEmployeeCelebratingBirthday,
                             $anotherEmployeeCelebratingBirthday,
                         ])

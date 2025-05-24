@@ -2,8 +2,9 @@
 
 namespace BirthdayGreetings;
 
+use Rx\Observable;
+
 interface EmployeeRepository
 {
-    /** @return iterable<Employee> */
-    public function findEmployeesCelebratingBirthdayOn(XDate $xDate): iterable;
+    public function findEmployeesCelebratingBirthdayOn(XDate $xDate): Observable;
 }

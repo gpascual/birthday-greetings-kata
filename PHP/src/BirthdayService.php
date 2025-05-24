@@ -16,8 +16,9 @@ readonly class BirthdayService
 
     public function sendGreetings(XDate $xDate): void
     {
-        Observable::fromIterator($this->employeeRepository->findEmployeesCelebratingBirthdayOn($xDate))
+        $this->employeeRepository->findEmployeesCelebratingBirthdayOn($xDate)
             ->map(Message::birthdayGreeting(...))
+            ->doOnError($this->logSendingError(...))
             ->subscribe($this->sendGreeting(...));
     }
 
