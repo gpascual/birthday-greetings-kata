@@ -9,6 +9,7 @@ use BirthdayGreetings\XDate;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Rx\Scheduler;
 
 class AcceptanceTest extends TestCase
 {
@@ -24,6 +25,14 @@ class AcceptanceTest extends TestCase
             new Logger('BirthdayGreetings', [new ErrorLogHandler()])
         );
         $this->deleteAllEmails();
+    }
+
+    public static function setUpBeforeClass(): void
+    {
+        Scheduler::setDefaultFactory(static function () {
+            static $scheduler = new Scheduler\ImmediateScheduler();
+            return $scheduler;
+        });
     }
 
     private function deleteAllEmails(): void

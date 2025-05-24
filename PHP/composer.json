@@ -6,7 +6,8 @@
         "php": ">=8.4",
         "monolog/monolog": "^3.9",
         "phpmailer/phpmailer": "^6.8",
-        "psr/log": "^3.0"
+        "psr/log": "^3.0",
+        "reactivex/rxphp": "^2.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.6",

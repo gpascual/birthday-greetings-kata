@@ -3,6 +3,7 @@
 namespace BirthdayGreetings;
 
 use Psr\Log\LoggerInterface;
+use Rx\Observable;
 
 readonly class BirthdayService
 {
@@ -15,13 +16,25 @@ readonly class BirthdayService
 
     public function sendGreetings(XDate $xDate): void
     {
-        foreach ($this->employeeRepository->findEmployeesCelebratingBirthdayOn($xDate) as $employee) {
-            try {
-                $this->messageSender->sendMessage(Message::birthdayGreeting($employee));
-            } catch (\Exception $e) {
-                $this->logger->error("Error processing employee data: " . $e->getMessage(), ['exception' => $e]);
-                continue;
-            }
-        }
+        Observable::fromIterator($this->employeeRepository->findEmployeesCelebratingBirthdayOn($xDate))
+            ->map(Message::birthdayGreeting(...))
+            ->subscribe($this->sendGreeting(...));
+    }
+
+    private function sendGreeting(Message $greeting): void
+    {
+        Observable::of($greeting)
+            ->subscribe(
+                $this->messageSender->sendMessage(...),
+                $this->logSendingError(...)
+            );
+    }
+
+    private function logSendingError(\Throwable $e): void
+    {
+        $this->logger->error(
+            "Error processing employee data: " . $e->getMessage(),
+            ['exception' => $e]
+        );
     }
 }
