@@ -4,7 +4,11 @@ namespace BirthdayGreetings\Emails;
 
 use BirthdayGreetings\Message;
 
+/** @template M of Message */
 interface EmailMessageComposer
 {
-    public function compose(Message $message): EmailMessage;
+    /**
+     * @param M $message
+     */
+    public function compose($message): EmailMessage;
 }

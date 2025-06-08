@@ -2,12 +2,15 @@
 
 namespace BirthdayGreetings\Emails;
 
-use BirthdayGreetings\Message;
+use BirthdayGreetings\BirthdayGreetingMessage;
 
+/**
+ * @implements EmailMessageComposer<BirthdayGreetingMessage>
+ */
 final class BirthdayGreetingEmailMessageComposer implements EmailMessageComposer
 {
     #[\Override]
-    public function compose(Message $message): EmailMessage
+    public function compose($message): EmailMessage
     {
         return new EmailMessage(
             'sender@here.com',

@@ -2,7 +2,13 @@
 
 namespace BirthdayGreetings;
 
+/**
+ * @template M of Message
+ */
 interface MessageSender
 {
-    public function sendMessage(Message $message): void;
+    /**
+     * @param M $message
+     */
+    public function sendMessage($message): void;
 }

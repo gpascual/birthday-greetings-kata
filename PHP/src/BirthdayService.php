@@ -7,6 +7,9 @@ use Rx\Observable;
 
 final readonly class BirthdayService
 {
+    /**
+     * @param MessageSender<BirthdayGreetingMessage> $messageSender
+     */
     public function __construct(
         private EmployeeRepository $employeeRepository,
         private MessageSender $messageSender,
@@ -17,7 +20,7 @@ final readonly class BirthdayService
     public function sendGreetings(XDate $xDate): void
     {
         $this->employeeRepository->findEmployeesCelebratingBirthdayOn($xDate)
-            ->map(Message::birthdayGreeting(...))
+            ->map(BirthdayGreetingMessage::create(...))
             ->doOnError($this->logSendingError(...))
             ->subscribe($this->sendGreeting(...));
     }

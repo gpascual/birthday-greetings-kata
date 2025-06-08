@@ -1,25 +1,20 @@
 <?php
 
-use BirthdayGreetings\Adapters\Emails\PHPMailerMessageSender;
-use BirthdayGreetings\Adapters\Emails\SymfonyMailerMessageSender;
-use BirthdayGreetings\Emails\BirthdayGreetingEmailMessageComposer;
+use BirthdayGreetings\BirthdayGreetingMessage;
 use BirthdayGreetings\Emails\EmailMessageSender;
 use BirthdayGreetings\Employee;
-use BirthdayGreetings\Message;
 use BirthdayGreetings\Tests\Unit\Adapters\Emails\EmailMessageSenderTestCase;
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\Transport;
 
 pest()->extends(EmailMessageSenderTestCase::class);
 
-describe(SymfonyMailerMessageSender::class, function () {
+describe(EmailMessageSender::class, function () {
     afterEach(function () {
         $this->deleteAllEmails();
     });
 
     it('sends a message', function (EmailMessageSender $sut) {
         $sut->sendMessage(
-            Message::birthdayGreeting(new Employee('Jane', 'Doe', '2000/01/01', 'jane.doe@gmail.com'))
+            BirthdayGreetingMessage::create(new Employee('Jane', 'Doe', '2000/01/01', 'jane.doe@gmail.com'))
         );
 
         $emails = $this->getEmails();
@@ -37,22 +32,4 @@ STR,
         );
         $this->assertEquals([['address' => 'jane.doe@gmail.com', 'name' => '']], $email['to']);
     })->with('adapters');
-
-    dataset('adapters', [
-        'PHPMailer' => [
-            new PHPMailerMessageSender(
-                new BirthdayGreetingEmailMessageComposer(),
-                'localhost',
-                1025
-            ),
-        ],
-        'Symfony\Mailer' => [
-            new SymfonyMailerMessageSender(
-                new BirthdayGreetingEmailMessageComposer(),
-                new Mailer(
-                    Transport::fromDsn('smtp://localhost:1025')
-                )
-            )
-        ]
-    ]);
 });

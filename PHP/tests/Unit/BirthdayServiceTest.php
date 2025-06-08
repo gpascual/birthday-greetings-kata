@@ -1,9 +1,9 @@
 <?php
 
+use BirthdayGreetings\BirthdayGreetingMessage;
 use BirthdayGreetings\BirthdayService;
 use BirthdayGreetings\Employee;
 use BirthdayGreetings\EmployeeRepository;
-use BirthdayGreetings\Message;
 use BirthdayGreetings\MessageSender;
 use BirthdayGreetings\Tests\BirthdayServiceTestCase;
 use BirthdayGreetings\XDate;
@@ -53,12 +53,12 @@ describe('BirthdayService', function () {
             $this->messageSender
                 ->shouldHaveReceived(
                     'sendMessage',
-                    [Mockery::isEqual(Message::birthdayGreeting($anEmployeeCelebratingBirthday))]
+                    [Mockery::isEqual(BirthdayGreetingMessage::create($anEmployeeCelebratingBirthday))]
                 );
             $this->messageSender
                 ->shouldHaveReceived(
                     'sendMessage',
-                    [Mockery::isEqual(Message::birthdayGreeting($anotherEmployeeCelebratingBirthday))]
+                    [Mockery::isEqual(BirthdayGreetingMessage::create($anotherEmployeeCelebratingBirthday))]
                 );
         }
     );
@@ -81,7 +81,7 @@ describe('BirthdayService', function () {
                 $expectedSendingException = new RuntimeException('something went wrong');
                 $this->messageSender
                     ->allows('sendMessage')
-                    ->with(Mockery::isEqual(Message::birthdayGreeting($anEmployeeCelebratingBirthday)))
+                    ->with(Mockery::isEqual(BirthdayGreetingMessage::create($anEmployeeCelebratingBirthday)))
                     ->andThrow($expectedSendingException);
 
                 $this->sut->sendGreetings(new XDate($today));
@@ -97,7 +97,7 @@ describe('BirthdayService', function () {
                 $this->messageSender
                     ->shouldHaveReceived(
                         'sendMessage',
-                        [Mockery::isEqual(Message::birthdayGreeting($anotherEmployeeCelebratingBirthday))]
+                        [Mockery::isEqual(BirthdayGreetingMessage::create($anotherEmployeeCelebratingBirthday))]
                     );
             }
         );
