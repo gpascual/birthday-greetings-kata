@@ -3,8 +3,9 @@
 namespace birthday_greetings;
 
 use BirthdayGreetings\Adapters\CsvEmployeeRepository;
-use BirthdayGreetings\Adapters\MailMessageSender;
+use BirthdayGreetings\Adapters\PHPMailerMessageSender;
 use BirthdayGreetings\BirthdayService;
+use BirthdayGreetings\Tests\SmtpTesting;
 use BirthdayGreetings\XDate;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
@@ -13,15 +14,15 @@ use Rx\Scheduler;
 
 class AcceptanceTest extends TestCase
 {
-    private const SMTP_PORT = 1025; // MailDev's default SMTP port
-    private const API_URL = 'http://localhost:1080';
+    use SmtpTesting;
+
     private BirthdayService $birthdayService;
 
     protected function setUp(): void
     {
         $this->birthdayService = new BirthdayService(
             new CsvEmployeeRepository('employee_data.txt'),
-            new MailMessageSender('localhost', self::SMTP_PORT),
+            new PHPMailerMessageSender('localhost', self::SMTP_PORT),
             new Logger('BirthdayGreetings', [new ErrorLogHandler()])
         );
         $this->deleteAllEmails();
@@ -33,19 +34,6 @@ class AcceptanceTest extends TestCase
             static $scheduler = new Scheduler\ImmediateScheduler();
             return $scheduler;
         });
-    }
-
-    private function deleteAllEmails(): void
-    {
-        file_get_contents(self::API_URL . '/email/all', false, stream_context_create([
-            'http' => ['method' => 'DELETE']
-        ]));
-    }
-
-    private function getEmails(): array
-    {
-        $response = file_get_contents(self::API_URL . '/email');
-        return json_decode($response, true) ?? [];
     }
 
     public function testWillSendGreetingsWhenItsSomebodysBirthday(): void

@@ -2,12 +2,12 @@
 
 namespace BirthdayGreetings\Adapters;
 
+use BirthdayGreetings\EmailMessageSender;
 use BirthdayGreetings\Message;
-use BirthdayGreetings\MessageSender;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-final class MailMessageSender implements MessageSender
+final class PHPMailerMessageSender extends EmailMessageSender
 {
     public function __construct(private string $smtpHost, private int $smtpPort)
     {
