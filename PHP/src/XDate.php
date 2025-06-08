@@ -5,9 +5,9 @@ namespace BirthdayGreetings;
 use DateTime;
 use InvalidArgumentException;
 
-class XDate
+final class XDate
 {
-    private $date;
+    private \DateTimeInterface $date;
 
     public function __construct(?string $yyyyMMdd = null)
     {
@@ -40,18 +40,5 @@ class XDate
     public function __toString(): string
     {
         return $this->date->format('Y-m-d');
-    }
-
-    public function equals($obj): bool
-    {
-        if (!($obj instanceof self)) {
-            return false;
-        }
-        return $obj->date == $this->date;
-    }
-
-    public function hashCode(): int
-    {
-        return $this->date->getTimestamp();
     }
 }

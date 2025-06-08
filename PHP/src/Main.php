@@ -7,14 +7,15 @@ use BirthdayGreetings\Adapters\MailMessageSender;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use Rx\Scheduler;
+use Rx\SchedulerInterface;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-class Main
+final class Main
 {
     public static function main(): void
     {
-        Scheduler::setDefaultFactory(static function () {
+        Scheduler::setDefaultFactory(static function (): SchedulerInterface {
             static $scheduler = new Scheduler\ImmediateScheduler();
             return $scheduler;
         });

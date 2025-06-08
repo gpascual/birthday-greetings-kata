@@ -35,4 +35,4 @@ class XDateTest extends TestCase
         $this->assertFalse($date->isSameDay($differentDay));
         $this->assertFalse($date->isSameDay($differentMonth));
     }
-} 
+}

@@ -7,12 +7,13 @@ use BirthdayGreetings\MessageSender;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class MailMessageSender implements MessageSender
+final class MailMessageSender implements MessageSender
 {
     public function __construct(private string $smtpHost, private int $smtpPort)
     {
     }
 
+    #[\Override]
     public function sendMessage(Message $message): void
     {
         $recipient = $message->employee->getEmail();

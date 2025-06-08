@@ -5,7 +5,7 @@ namespace BirthdayGreetings;
 use Psr\Log\LoggerInterface;
 use Rx\Observable;
 
-readonly class BirthdayService
+final readonly class BirthdayService
 {
     public function __construct(
         private EmployeeRepository $employeeRepository,

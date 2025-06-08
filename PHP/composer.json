@@ -17,11 +17,7 @@
     "autoload": {
         "psr-4": {
             "BirthdayGreetings\\": "src/"
-        },
-        "files": [
-            "src/Functional/filter.php",
-            "src/Functional/map.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

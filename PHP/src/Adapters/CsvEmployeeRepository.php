@@ -6,11 +6,10 @@ use BirthdayGreetings\Employee;
 use BirthdayGreetings\EmployeeRepository;
 use BirthdayGreetings\XDate;
 use Rx\Observable;
-use function BirthdayGreetings\Functional\filter;
-use function BirthdayGreetings\Functional\map;
+
 use function trim;
 
-class CsvEmployeeRepository implements EmployeeRepository
+final class CsvEmployeeRepository implements EmployeeRepository
 {
     private string $filename;
 
@@ -19,11 +18,12 @@ class CsvEmployeeRepository implements EmployeeRepository
         $this->filename = $filename;
     }
 
+    #[\Override]
     public function findEmployeesCelebratingBirthdayOn(XDate $xDate): Observable
     {
         return Observable::fromIterator($this->extractEmployeeLines())
             ->map(
-                fn($data) => new Employee(trim($data[1]), trim($data[0]), trim($data[2]), trim($data[3]))
+                fn(array $data) => new Employee(trim($data[1]), trim($data[0]), trim($data[2]), trim($data[3]))
             )
             ->filter(
                 fn(Employee $e) => $e->isBirthday($xDate)
@@ -35,6 +35,8 @@ class CsvEmployeeRepository implements EmployeeRepository
         $handler = $this->initializeFileResourceAtStart();
 
         while (false !== ($data = fgetcsv($handler, 0))) {
+            assert(null !== $data);
+
             // Skip invalid lines
             if (count($data) < 4) {
                 continue;
@@ -46,9 +48,12 @@ class CsvEmployeeRepository implements EmployeeRepository
         fclose($handler);
     }
 
+    /**
+     * @return resource
+     */
     private function initializeFileResourceAtStart()
     {
-        $handler = fopen($this->filename, 'r');
+        $handler = fopen($this->filename, 'rb');
 
         if ($handler === false) {
             throw new \RuntimeException("Could not open file: $this->filename");
