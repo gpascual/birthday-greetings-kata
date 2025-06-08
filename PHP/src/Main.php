@@ -3,7 +3,8 @@
 namespace BirthdayGreetings;
 
 use BirthdayGreetings\Adapters\CsvEmployeeRepository;
-use BirthdayGreetings\Adapters\PHPMailerMessageSender;
+use BirthdayGreetings\Adapters\Emails\PHPMailerMessageSender;
+use BirthdayGreetings\Emails\BirthdayGreetingEmailMessageComposer;
 use Monolog\Handler\ErrorLogHandler;
 use Monolog\Logger;
 use Rx\Scheduler;
@@ -22,7 +23,7 @@ final class Main
 
         $service = new BirthdayService(
             new CsvEmployeeRepository('employee_data.txt'),
-            new PHPMailerMessageSender('localhost', 25),
+            new PHPMailerMessageSender(new BirthdayGreetingEmailMessageComposer(), 'localhost', 25),
             new Logger('BirthdayGreetings', [new ErrorLogHandler()])
         );
         $service->sendGreetings((new XDate()));

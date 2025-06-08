@@ -1,15 +1,20 @@
 <?php
 
-use BirthdayGreetings\Adapters\PHPMailerMessageSender;
+use BirthdayGreetings\Adapters\Emails\PHPMailerMessageSender;
+use BirthdayGreetings\Emails\BirthdayGreetingEmailMessageComposer;
 use BirthdayGreetings\Employee;
 use BirthdayGreetings\Message;
-use BirthdayGreetings\Tests\PHPMailerMessageSenderTestCase;
+use BirthdayGreetings\Tests\Unit\Adapters\Emails\PHPMailerMessageSenderTestCase;
 
 pest()->extends(PHPMailerMessageSenderTestCase::class);
 
 describe(PHPMailerMessageSender::class, function () {
     beforeEach(function () {
-        $this->sut = new PHPMailerMessageSender('localhost', $this::SMTP_PORT);
+        $this->sut = new PHPMailerMessageSender(
+            new BirthdayGreetingEmailMessageComposer(),
+            'localhost',
+            $this::SMTP_PORT
+        );
     });
 
     afterEach(function () {
@@ -31,11 +36,9 @@ describe(PHPMailerMessageSender::class, function () {
 Happy Birthday, dear Jane!
 
 
-STR
-            ,
+STR,
             $email['text']
         );
-        $this->assertCount(1, $email['to']);
-        $this->assertEquals('jane.doe@gmail.com', $email['to'][0]['address']);
+        $this->assertEquals([['address' => 'jane.doe@gmail.com', 'name' => '']], $email['to']);
     });
 });

@@ -3,7 +3,8 @@
 namespace birthday_greetings;
 
 use BirthdayGreetings\Adapters\CsvEmployeeRepository;
-use BirthdayGreetings\Adapters\PHPMailerMessageSender;
+use BirthdayGreetings\Adapters\Emails\PHPMailerMessageSender;
+use BirthdayGreetings\Emails\BirthdayGreetingEmailMessageComposer;
 use BirthdayGreetings\BirthdayService;
 use BirthdayGreetings\Tests\SmtpTesting;
 use BirthdayGreetings\XDate;
@@ -22,7 +23,7 @@ class AcceptanceTest extends TestCase
     {
         $this->birthdayService = new BirthdayService(
             new CsvEmployeeRepository('employee_data.txt'),
-            new PHPMailerMessageSender('localhost', self::SMTP_PORT),
+            new PHPMailerMessageSender(new BirthdayGreetingEmailMessageComposer(), 'localhost', self::SMTP_PORT),
             new Logger('BirthdayGreetings', [new ErrorLogHandler()])
         );
         $this->deleteAllEmails();
@@ -47,18 +48,17 @@ class AcceptanceTest extends TestCase
         $this->assertCount(1, $emails, 'Expected exactly one email to be sent');
 
         $email = $emails[0];
+        $this->assertCount(1, $email['to']);
         $this->assertEquals('Happy Birthday!', $email['subject']);
         $this->assertEquals(
             <<<'STR'
 Happy Birthday, dear John!
 
 
-STR
-            ,
+STR,
             $email['text']
         );
-        $this->assertCount(1, $email['to']);
-        $this->assertEquals('john.doe@foobar.com', $email['to'][0]['address']);
+        $this->assertEquals([['address' => 'john.doe@foobar.com', 'name' => '']], $email['to']);
     }
 
     public function testWillNotSendEmailsWhenNobodysBirthday(): void
