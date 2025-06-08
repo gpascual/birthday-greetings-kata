@@ -1,19 +1,22 @@
 <?php
 
-use BirthdayGreetings\Adapters\Emails\PHPMailerMessageSender;
+use BirthdayGreetings\Adapters\Emails\SymfonyMailerMessageSender;
 use BirthdayGreetings\Emails\BirthdayGreetingEmailMessageComposer;
 use BirthdayGreetings\Employee;
 use BirthdayGreetings\Message;
 use BirthdayGreetings\Tests\Unit\Adapters\Emails\EmailMessageSenderTestCase;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
 
 pest()->extends(EmailMessageSenderTestCase::class);
 
-describe(PHPMailerMessageSender::class, function () {
+describe(SymfonyMailerMessageSender::class, function () {
     beforeEach(function () {
-        $this->sut = new PHPMailerMessageSender(
+        $this->sut = new SymfonyMailerMessageSender(
             new BirthdayGreetingEmailMessageComposer(),
-            'localhost',
-            $this::SMTP_PORT
+            new Mailer(
+                Transport::fromDsn("smtp://localhost:{$this->SMTP_PORT}")
+            )
         );
     });
 
